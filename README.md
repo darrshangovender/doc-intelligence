@@ -1,4 +1,17 @@
+<div align="center">
+
 # Document-Intelligence Pipeline
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://python.org)
+[![OpenAI](https://img.shields.io/badge/OpenAI-API-412991?logo=openai&logoColor=white)](https://platform.openai.com)
+[![Pydantic](https://img.shields.io/badge/Pydantic-2.7+-E92063?logo=pydantic&logoColor=white)](https://pydantic.dev)
+[![Status](https://img.shields.io/badge/Status-Production-success)](#)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1?logo=postgresql&logoColor=white)](https://postgresql.org)
+
+</div>
+
+---
 
 > Automated extraction pipeline for a client receiving structured data from semi-structured PDFs (invoices and statements). OCR → LLM-based field extraction with schema validation → Postgres write → exception queue for human review. Replaced manual data entry on a recurring high-volume workflow.
 
