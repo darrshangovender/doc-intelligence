@@ -1,0 +1,117 @@
+# Golden expectations for each sample document.
+# Run with:  python eval/run_eval.py
+#
+# `expected` fields are compared by string equality after normalisation. Money
+# is compared as Decimal. line_items / items / parties are compared as sets
+# of normalised descriptions.
+
+cases:
+  - id: invoice_001
+    file: demo/sample_docs/invoice_001.txt
+    doc_type: invoice
+    expected:
+      vendor: ACME WIDGETS PTY LTD
+      invoice_no: INV-2025-00042
+      invoice_date: "2025-03-14"
+      due_date: "2025-04-13"
+      subtotal: "865.00"
+      tax: "129.75"
+      total: "994.75"
+      line_item_descriptions:
+        - Stainless mixing bowl
+        - Whisk attachment, large
+        - Silicone spatula set
+
+  - id: invoice_002
+    file: demo/sample_docs/invoice_002.txt
+    doc_type: invoice
+    expected:
+      vendor: BLUE MOUNTAIN COFFEE ROASTERS
+      invoice_no: BMC-7781
+      invoice_date: "2025-05-02"
+      due_date: "2025-05-16"
+      subtotal: "2040.00"
+      tax: "306.00"
+      total: "2346.00"
+      line_item_descriptions:
+        - Single-origin Ethiopia Yirgacheffe
+        - House blend espresso (1kg)
+        - Decaf Colombia
+
+  - id: invoice_003
+    file: demo/sample_docs/invoice_003.txt
+    doc_type: invoice
+    expected:
+      vendor: Cape Town Logistics CC
+      invoice_no: INV-CTL-1138
+      invoice_date: "2025-06-01"
+      due_date: "2025-06-15"
+      subtotal: "1650.00"
+      tax: "247.50"
+      total: "1897.50"
+
+  - id: receipt_001
+    file: demo/sample_docs/receipt_001.txt
+    doc_type: receipt
+    expected:
+      merchant: CHECKERS HYPER
+      purchase_date: "2025-04-18"
+      subtotal: "196.96"
+      tax: "29.54"
+      total: "226.50"
+      payment_method: VISA
+
+  - id: receipt_002
+    file: demo/sample_docs/receipt_002.txt
+    doc_type: receipt
+    expected:
+      merchant: WOOLWORTHS V&A WATERFRONT
+      purchase_date: "2025-05-09"
+      subtotal: "266.48"
+      tax: "39.97"
+      total: "306.45"
+      payment_method: CASH
+
+  - id: receipt_003
+    file: demo/sample_docs/receipt_003.txt
+    doc_type: receipt
+    expected:
+      merchant: PICK N PAY HOPE STREET
+      purchase_date: "2025-03-26"
+      subtotal: "137.50"
+      tax: "20.63"
+      total: "158.13"
+      payment_method: DEBIT CARD
+      currency: ZAR
+
+  - id: contract_001
+    file: demo/sample_docs/contract_001.txt
+    doc_type: contract
+    expected:
+      parties:
+        - Agulhas Code (Pty) Ltd
+        - Velocity Contact Hub (Pty) Ltd
+      effective_date: "2025-02-01"
+      renewal_notice_days: 30
+      contract_type: NDA
+
+  - id: contract_002
+    file: demo/sample_docs/contract_002.txt
+    doc_type: contract
+    expected:
+      parties:
+        - MediBridge Health Solutions
+        - LeasEase Property Tech (Pty) Ltd
+      effective_date: "2025-03-15"
+      renewal_notice_days: 60
+      contract_type: MSA
+
+  - id: contract_003
+    file: demo/sample_docs/contract_003.txt
+    doc_type: contract
+    expected:
+      parties:
+        - MediBridge Health Solutions
+        - Trekova Mobility (Pty) Ltd
+      effective_date: "2025-04-01"
+      contract_type: SOW
