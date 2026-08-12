@@ -1,0 +1,16 @@
+Cape Town Logistics CC
+Suite 5, Foreshore Place
+VAT 9876543210
+
+INVOICE INV-CTL-1138
+Invoice Date 2025-06-01
+Payment due by 2025-06-15
+
+To: GSC Logistics
+
+Delivery service Cape Town -> Durban           1500.00
+Fuel surcharge                                  150.00
+
+Total excl                                     1650.00
+VAT 15%                                         247.50
+Grand Total                                    1897.50
