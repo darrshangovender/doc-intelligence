@@ -1,0 +1,18 @@
+CHECKERS HYPER
+SHOP 12 CANAL WALK
+TILL 04   CASHIER 22
+2025-04-18  14:32
+
+Brown bread loaf            18.99
+Free range eggs 6pk         42.50
+Whole milk 2L               29.99
+Bananas 1kg                 15.49
+Toilet paper 9pk            89.99
+
+SUBTOTAL                   196.96
+VAT 15%                     29.54
+TOTAL                      226.50
+
+CARD - VISA  ****1234
+APPROVED
+THANK YOU
