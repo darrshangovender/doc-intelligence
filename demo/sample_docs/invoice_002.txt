@@ -1,0 +1,19 @@
+BLUE MOUNTAIN COFFEE ROASTERS
+8 Roastery Lane, Johannesburg
+
+Tax Invoice  #BMC-7781
+Date: 2025-05-02
+Due: 2025-05-16
+
+Customer: Velocity Contact Hub
+
+Item                                  Qty   Price    Total
+Single-origin Ethiopia Yirgacheffe      5   180.00   900.00
+House blend espresso (1kg)              3   220.00   660.00
+Decaf Colombia                          2   240.00   480.00
+
+Subtotal     2040.00
+VAT 15%       306.00
+TOTAL        2346.00
+
+Thank you for your business.
