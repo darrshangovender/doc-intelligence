@@ -1,0 +1,25 @@
+ACME WIDGETS PTY LTD
+123 Industrial Road, Cape Town, 8001
+VAT: 4123456789
+
+INVOICE
+
+Invoice No: INV-2025-00042
+Invoice Date: 2025-03-14
+Due Date: 2025-04-13
+Bill To: Sweet Affair Bakery, 14 Long St, Cape Town
+
+----------------------------------------------------
+Description              Qty   Unit Price   Line Total
+----------------------------------------------------
+Stainless mixing bowl      4      120.00       480.00
+Whisk attachment, large    2       95.00       190.00
+Silicone spatula set       3       65.00       195.00
+----------------------------------------------------
+
+Subtotal:                                       865.00
+VAT (15%):                                      129.75
+TOTAL DUE:                                      994.75
+
+Payment Terms: Net 30
+Bank: Standard Bank, Acct 123456789
