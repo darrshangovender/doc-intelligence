@@ -7,8 +7,24 @@ lives in :mod:`doc_intelligence.pdf_loader`.
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
-from typing import Union
+
+
+def tesseract_available() -> bool:
+    """True if OCR can actually run here — bindings *and* the Tesseract binary.
+
+    The binary is the piece CI lacks. ``pip install pytesseract`` succeeds on a
+    bare ubuntu runner, so an import check passes and then ``image_to_string``
+    dies at exec time. Callers and tests should gate on this instead.
+    """
+    try:
+        import pytesseract
+        from PIL import Image  # noqa: F401
+    except ImportError:
+        return False
+    cmd = getattr(pytesseract.pytesseract, "tesseract_cmd", "tesseract")
+    return shutil.which(str(cmd)) is not None or Path(str(cmd)).exists()
 
 
 # Tesseract is heavy and optional at import-time so unit tests don't require it.
@@ -17,22 +33,24 @@ def _tesseract_image_to_string(image_path: Path) -> str:
         import pytesseract
         from PIL import Image
     except ImportError as exc:  # pragma: no cover
-        raise RuntimeError("pytesseract / Pillow required for OCR") from exc
+        raise RuntimeError(
+            "pytesseract / Pillow required for OCR. `pip install doc-intelligence[ocr]`"
+        ) from exc
     with Image.open(image_path) as img:
         return pytesseract.image_to_string(img)
 
 
-def ocr_image(image_path: Union[str, Path]) -> str:
+def ocr_image(image_path: str | Path) -> str:
     """Run Tesseract on an image file."""
     return _tesseract_image_to_string(Path(image_path))
 
 
-def read_text_file(text_path: Union[str, Path]) -> str:
+def read_text_file(text_path: str | Path) -> str:
     """Read a pre-OCR'd .txt file (text-only mode)."""
     return Path(text_path).read_text(encoding="utf-8")
 
 
-def read(source: Union[str, Path, bytes]) -> str:
+def read(source: str | Path | bytes) -> str:
     """Generic entry point.
 
     * ``str`` that looks like a path → dispatch by suffix
