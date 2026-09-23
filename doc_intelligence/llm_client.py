@@ -13,7 +13,8 @@ from __future__ import annotations
 import json
 import os
 import re
-from typing import Any, Callable, Protocol
+from collections.abc import Callable
+from typing import Any, Protocol
 
 
 class LLMClient(Protocol):
@@ -83,8 +84,14 @@ class StubLLM:
     Supports two modes:
 
     * Pass a ``responder`` callable that receives ``(system, user)`` and returns a string.
-    * Pass a ``mapping`` of substrings → JSON strings; the first key found in the
-      ``user`` prompt wins.
+    * Pass a ``mapping`` of substrings → JSON strings; of the keys present in the
+      ``user`` prompt, the one occurring **earliest** wins.
+
+    Earliest-occurrence rather than dict order, because business documents cite
+    each other: a Statement of Work opens with its own title but references the
+    Master Services Agreement it hangs off a few lines later. Matching on dict
+    insertion order made the SOW resolve to the MSA fixture, which silently
+    handed tests the wrong document's data.
     """
 
     def __init__(
@@ -101,9 +108,19 @@ class StubLLM:
     def complete(self, *, system: str, user: str, max_tokens: int = 2048) -> str:
         if self._responder is not None:
             return self._responder(system, user)
+        haystack = user.lower()
+        best: tuple[int, int, str] | None = None  # (position, -len(needle), response)
         for needle, response in self._mapping.items():
-            if needle.lower() in user.lower():
-                return response
+            pos = haystack.find(needle.lower())
+            if pos == -1:
+                continue
+            # Longer needle breaks a positional tie, so a more specific marker
+            # beats a prefix of itself starting at the same offset.
+            candidate = (pos, -len(needle), response)
+            if best is None or candidate[:2] < best[:2]:
+                best = candidate
+        if best is not None:
+            return best[2]
         if self._default is not None:
             return self._default
         raise RuntimeError("StubLLM has no matching response and no default.")
