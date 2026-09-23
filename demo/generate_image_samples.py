@@ -15,7 +15,6 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
-
 HERE = Path(__file__).parent
 SAMPLES = HERE / "sample_docs"
 OUT = HERE / "sample_images"
