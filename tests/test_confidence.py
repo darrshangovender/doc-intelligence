@@ -8,6 +8,7 @@ from doc_intelligence.confidence import (
     heuristic_score,
     needs_review,
     overall_confidence,
+    ungrounded_fields,
 )
 
 
@@ -75,3 +76,50 @@ def test_combine_scores_handles_missing_llm_scores():
     combined = combine_scores(None, {"vendor": "ACME"}, "ACME widgets")
     assert "vendor" in combined
     assert 0 <= combined["vendor"] <= 1
+
+
+# ---------------- Routing: fields that carry no evidence ----------------
+
+def test_ungrounded_fields_flags_absent_values():
+    """Null/empty optional fields are 'not on the document', not 'probably wrong'."""
+    data = {"vendor": "ACME", "currency": None, "notes": "", "items": []}
+    assert ungrounded_fields(data) == {"currency", "notes", "items"}
+
+
+def test_ungrounded_fields_flags_declared_derived_fields():
+    data = {"parties": ["A", "B"], "contract_type": "NDA"}
+    assert ungrounded_fields(data, derived={"contract_type"}) == {"contract_type"}
+
+
+def test_ungrounded_fields_ignores_underscore_metadata():
+    data = {"vendor": "ACME", "_confidence": {}}
+    assert "_confidence" not in ungrounded_fields(data)
+
+
+def test_ungrounded_derived_names_absent_from_data_are_not_reported():
+    assert ungrounded_fields({"vendor": "ACME"}, derived={"contract_type"}) == set()
+
+
+def test_absent_optional_field_alone_does_not_force_review():
+    """The bug this guards: one null optional field pinned every document to
+    the review queue, because its neutral 0.5 became the min() of the gate."""
+    scores = {"merchant": 0.95, "total": 0.95, "currency": 0.5}
+    assert needs_review(scores, threshold=0.75) is True
+    assert needs_review(scores, threshold=0.75, ignore={"currency"}) is False
+
+
+def test_derived_field_alone_does_not_force_review():
+    scores = {"parties": 0.98, "term": 0.93, "contract_type": 0.62}
+    assert needs_review(scores, threshold=0.75, ignore={"contract_type"}) is False
+
+
+def test_ignoring_fields_cannot_mask_a_genuinely_low_score():
+    # Exempting the ungrounded field must not rescue a document whose *graded*
+    # fields are weak — otherwise the gate would be meaningless.
+    scores = {"vendor": 0.41, "currency": 0.5}
+    assert needs_review(scores, threshold=0.75, ignore={"currency"}) is True
+
+
+def test_ignoring_everything_routes_to_review():
+    # Nothing left to corroborate → a human looks at it.
+    assert needs_review({"currency": 0.5}, threshold=0.75, ignore={"currency"}) is True
