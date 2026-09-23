@@ -10,19 +10,18 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 
 from doc_intelligence.extractors.base import BaseExtractor
 
-
 # Money-comparison tolerance — OCR and rounding rarely match to the cent.
 TOTAL_TOLERANCE = Decimal("0.05")
 
 
 class LineItem(BaseModel):
     description: str = Field(min_length=1)
-    quantity: Decimal = Field(default=Decimal("1"))
+    quantity: Decimal = Field(default=Decimal(1))
     unit_price: Decimal
     line_total: Decimal
 
     @model_validator(mode="after")
-    def line_total_reconciles(self) -> "LineItem":
+    def line_total_reconciles(self) -> LineItem:
         expected = (self.quantity * self.unit_price).quantize(Decimal("0.01"))
         actual = self.line_total.quantize(Decimal("0.01"))
         if abs(expected - actual) > TOTAL_TOLERANCE:
@@ -47,7 +46,7 @@ class InvoiceData(BaseModel):
         return v.strip()
 
     @model_validator(mode="after")
-    def totals_reconcile(self) -> "InvoiceData":
+    def totals_reconcile(self) -> InvoiceData:
         """Line items should sum to the total within a small tolerance.
 
         We allow the model to set ``line_items=[]`` if the invoice is a
@@ -56,8 +55,8 @@ class InvoiceData(BaseModel):
         """
         if not self.line_items:
             return self
-        line_sum = sum((li.line_total for li in self.line_items), Decimal("0"))
-        expected_total = line_sum + (self.tax or Decimal("0"))
+        line_sum = sum((li.line_total for li in self.line_items), Decimal(0))
+        expected_total = line_sum + (self.tax or Decimal(0))
         if abs(expected_total - self.total) > TOTAL_TOLERANCE:
             raise ValueError(
                 f"Line items + tax ({expected_total}) do not reconcile to total ({self.total})"
