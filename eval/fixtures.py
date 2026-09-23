@@ -11,7 +11,6 @@ from pathlib import Path
 
 from doc_intelligence.llm_client import StubLLM
 
-
 # Each entry: substring of the document text → JSON payload string the model would emit.
 # The keys are picked to be unique-enough to match by ``in`` substring search.
 FIXTURE_RESPONSES: dict[str, dict] = {
