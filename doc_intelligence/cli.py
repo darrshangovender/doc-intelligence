@@ -11,7 +11,6 @@ import click
 from doc_intelligence.facade import EXTRACTOR_REGISTRY, Extractor
 from doc_intelligence.review_queue import ReviewQueue
 
-
 DEFAULT_DB = "review_queue.db"
 
 
