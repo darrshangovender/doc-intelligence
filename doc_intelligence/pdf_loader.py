@@ -8,10 +8,9 @@ the page to an image and run Tesseract on it.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union
 
 
-def has_text_layer(pdf_path: Union[str, Path], min_chars_for_native: int = 40) -> bool:
+def has_text_layer(pdf_path: str | Path, min_chars_for_native: int = 40) -> bool:
     """True if the PDF appears to have a usable text layer on at least one page."""
     try:
         import pdfplumber
@@ -25,7 +24,7 @@ def has_text_layer(pdf_path: Union[str, Path], min_chars_for_native: int = 40) -
     return False
 
 
-def extract_native_text(pdf_path: Union[str, Path]) -> str:
+def extract_native_text(pdf_path: str | Path) -> str:
     """Extract text from a PDF that has a text layer."""
     import pdfplumber
 
@@ -38,7 +37,7 @@ def extract_native_text(pdf_path: Union[str, Path]) -> str:
     return "\n\n".join(chunks)
 
 
-def extract_ocr_text(pdf_path: Union[str, Path]) -> str:
+def extract_ocr_text(pdf_path: str | Path) -> str:
     """Render each page to an image and OCR it. Slow path."""
     try:
         import pdfplumber
@@ -54,7 +53,7 @@ def extract_ocr_text(pdf_path: Union[str, Path]) -> str:
     return "\n\n".join(chunks)
 
 
-def load_pdf_text(pdf_path: Union[str, Path], min_chars_for_native: int = 40) -> str:
+def load_pdf_text(pdf_path: str | Path, min_chars_for_native: int = 40) -> str:
     """Pick native extraction or OCR depending on whether the PDF has a text layer."""
     if has_text_layer(pdf_path, min_chars_for_native=min_chars_for_native):
         return extract_native_text(pdf_path)
