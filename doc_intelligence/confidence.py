@@ -15,8 +15,8 @@ The final per-field score is clamped to ``[0.0, 1.0]``.
 from __future__ import annotations
 
 import re
-from typing import Any, Mapping
-
+from collections.abc import Collection, Mapping
+from typing import Any
 
 # Anything below this triggers human review.
 DEFAULT_REVIEW_THRESHOLD = 0.75
@@ -100,9 +100,46 @@ def overall_confidence(scores: Mapping[str, float]) -> float:
     return min(scores.values())
 
 
+def ungrounded_fields(
+    extracted: Mapping[str, Any],
+    derived: Collection[str] = (),
+) -> set[str]:
+    """Fields whose score carries no evidence about correctness.
+
+    ``heuristic_score`` returns a neutral 0.5 when it cannot ground a value in
+    the source text. That is "no signal", not "probably wrong" — but feeding it
+    into the ``min()`` gate makes it behave like the latter, so a single
+    legitimately-absent optional field pins every document to the review queue.
+    Two cases genuinely cannot be graded by substring matching:
+
+    * **Absent values.** The schema marks the field optional and the model
+      followed the instruction to emit null rather than guess. "Not on the
+      document" is a correct answer.
+    * **Derived values.** A classification such as ``contract_type="NDA"`` is a
+      judgement about the document, not a span copied out of it — an NDA rarely
+      contains the literal string "NDA".
+
+    These are still scored and reported; they just do not gate auto-approval.
+    """
+    derived_set = set(derived)
+    absent = {
+        name
+        for name, value in extracted.items()
+        if not name.startswith("_") and (value is None or value == "" or value == [])
+    }
+    return absent | (derived_set & {n for n in extracted if not n.startswith("_")})
+
+
 def needs_review(
     scores: Mapping[str, float],
     threshold: float = DEFAULT_REVIEW_THRESHOLD,
+    ignore: Collection[str] = (),
 ) -> bool:
-    """True if any field falls below the review threshold."""
-    return overall_confidence(scores) < threshold
+    """True if any *gating* field falls below the review threshold.
+
+    ``ignore`` names fields excluded from the gate — see
+    :func:`ungrounded_fields`. If everything is ignored there is nothing left to
+    corroborate, so the document is sent to review rather than waved through.
+    """
+    gating = {name: score for name, score in scores.items() if name not in set(ignore)}
+    return overall_confidence(gating) < threshold
