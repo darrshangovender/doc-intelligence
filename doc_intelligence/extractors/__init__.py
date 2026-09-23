@@ -7,14 +7,14 @@ from doc_intelligence.extractors.receipt import ReceiptData, ReceiptExtractor, R
 
 __all__ = [
     "BaseExtractor",
-    "ExtractionResult",
-    "ExtractionStatus",
-    "InvoiceExtractor",
-    "InvoiceData",
-    "LineItem",
-    "ReceiptExtractor",
-    "ReceiptData",
-    "ReceiptLine",
     "ContractExtractor",
     "ContractMeta",
+    "ExtractionResult",
+    "ExtractionStatus",
+    "InvoiceData",
+    "InvoiceExtractor",
+    "LineItem",
+    "ReceiptData",
+    "ReceiptExtractor",
+    "ReceiptLine",
 ]
