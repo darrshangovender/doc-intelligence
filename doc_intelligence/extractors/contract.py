@@ -32,6 +32,9 @@ class ContractMeta(BaseModel):
 class ContractExtractor(BaseExtractor):
     schema: ClassVar[type[BaseModel]] = ContractMeta
     doc_type: ClassVar[str] = "contract"
+    # An NDA seldom contains the literal string "NDA" — this label is inferred
+    # from the document's shape, so it cannot be grounded by substring match.
+    derived_fields: ClassVar[frozenset[str]] = frozenset({"contract_type"})
     prompt_intro: ClassVar[str] = (
         "You are extracting metadata from a legal CONTRACT.\n"
         "Identify: the contracting parties (usually in the preamble — 'between X and Y'), "
