@@ -31,7 +31,6 @@ from doc_intelligence.facade import Extractor  # noqa: E402
 from doc_intelligence.llm_client import get_default_client  # noqa: E402
 from eval.fixtures import build_stub_llm, load_sample  # noqa: E402
 
-
 GOLDEN_PATH = REPO_ROOT / "eval" / "golden_extractions.yml"
 
 
