@@ -8,19 +8,19 @@ suite skips the PDF-specific test rather than failing.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import ClassVar
 
 import pytest
 
 from doc_intelligence import pdf_loader
-
 
 pytest.importorskip("reportlab", reason="reportlab needed to synthesize test PDFs")
 pytest.importorskip("pdfplumber", reason="pdfplumber is the PDF reader under test")
 
 
 def _make_native_pdf(out: Path, text: str = "Hello native PDF — INV-42, total 100.00") -> Path:
-    from reportlab.pdfgen import canvas
     from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
 
     c = canvas.Canvas(str(out), pagesize=letter)
     # Two lines so we comfortably clear the min_chars threshold
@@ -53,7 +53,7 @@ def test_has_text_layer_returns_false_for_empty_pdf(tmp_path, monkeypatch):
             return ""
 
     class FakePdf:
-        pages = [FakePage()]
+        pages: ClassVar[list] = [FakePage()]
 
         def __enter__(self):
             return self
