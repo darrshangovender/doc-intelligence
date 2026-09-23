@@ -5,7 +5,6 @@ optionally routes results into the review queue.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union
 
 from doc_intelligence import ocr
 from doc_intelligence.extractors.base import BaseExtractor, ExtractionResult, ExtractionStatus
@@ -14,7 +13,6 @@ from doc_intelligence.extractors.invoice import InvoiceExtractor
 from doc_intelligence.extractors.receipt import ReceiptExtractor
 from doc_intelligence.llm_client import LLMClient, get_default_client
 from doc_intelligence.review_queue import ReviewQueue
-
 
 EXTRACTOR_REGISTRY: dict[str, type[BaseExtractor]] = {
     "invoice": InvoiceExtractor,
@@ -58,7 +56,7 @@ class Extractor:
 
     def run(
         self,
-        source: Union[str, Path],
+        source: str | Path,
         *,
         doc_type: str,
         enqueue: bool = True,
