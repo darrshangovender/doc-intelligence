@@ -17,7 +17,7 @@ from typing import Any, ClassVar
 
 from pydantic import BaseModel, ValidationError
 
-from doc_intelligence.confidence import combine_scores, needs_review
+from doc_intelligence.confidence import combine_scores, needs_review, ungrounded_fields
 from doc_intelligence.llm_client import LLMClient, parse_json_response
 
 
@@ -77,6 +77,12 @@ class BaseExtractor:
     doc_type: ClassVar[str]
     prompt_intro: ClassVar[str] = ""
 
+    #: Fields the model *classifies* rather than copies out of the document.
+    #: They are scored and reported, but excluded from the auto-approval gate
+    #: because substring grounding cannot judge them. See
+    #: :func:`~doc_intelligence.confidence.ungrounded_fields`.
+    derived_fields: ClassVar[frozenset[str]] = frozenset()
+
     def __init__(self, llm: LLMClient, review_threshold: float = 0.75) -> None:
         self.llm = llm
         self.review_threshold = review_threshold
@@ -128,7 +134,11 @@ class BaseExtractor:
 
         data = validated.model_dump(mode="json")
         scores = combine_scores(llm_conf, data, source_text)
-        review = needs_review(scores, threshold=self.review_threshold)
+        review = needs_review(
+            scores,
+            threshold=self.review_threshold,
+            ignore=ungrounded_fields(data, derived=self.derived_fields),
+        )
         status = ExtractionStatus.NEEDS_REVIEW if review else ExtractionStatus.AUTO_APPROVED
 
         return ExtractionResult(
