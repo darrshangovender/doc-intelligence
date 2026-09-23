@@ -17,24 +17,24 @@ from doc_intelligence.extractors.base import (
 from doc_intelligence.extractors.contract import ContractExtractor, ContractMeta
 from doc_intelligence.extractors.invoice import InvoiceData, InvoiceExtractor, LineItem
 from doc_intelligence.extractors.receipt import ReceiptData, ReceiptExtractor, ReceiptLine
-from doc_intelligence.review_queue import ReviewQueue, ReviewRecord
 from doc_intelligence.facade import Extractor
+from doc_intelligence.review_queue import ReviewQueue, ReviewRecord
 
 __all__ = [
-    "Extractor",
     "BaseExtractor",
-    "ExtractionResult",
-    "ExtractionStatus",
-    "ReviewQueue",
-    "ReviewRecord",
-    "InvoiceExtractor",
-    "InvoiceData",
-    "LineItem",
-    "ReceiptExtractor",
-    "ReceiptData",
-    "ReceiptLine",
     "ContractExtractor",
     "ContractMeta",
+    "ExtractionResult",
+    "ExtractionStatus",
+    "Extractor",
+    "InvoiceData",
+    "InvoiceExtractor",
+    "LineItem",
+    "ReceiptData",
+    "ReceiptExtractor",
+    "ReceiptLine",
+    "ReviewQueue",
+    "ReviewRecord",
 ]
 
 __version__ = "0.2.0"
