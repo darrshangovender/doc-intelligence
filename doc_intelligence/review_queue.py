@@ -12,14 +12,14 @@ from __future__ import annotations
 import json
 import sqlite3
 import uuid
+from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 from doc_intelligence.extractors.base import ExtractionResult, ExtractionStatus
-
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS review_items (
@@ -62,7 +62,7 @@ class ReviewRecord:
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 class ReviewQueue:
