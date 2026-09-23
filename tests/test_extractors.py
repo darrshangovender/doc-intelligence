@@ -14,7 +14,6 @@ from doc_intelligence.extractors.invoice import InvoiceExtractor
 from doc_intelligence.extractors.receipt import ReceiptExtractor
 from doc_intelligence.llm_client import StubLLM
 
-
 # ---------------- Invoice ----------------
 
 def test_invoice_extracts_known_fields(stub_llm, sample_text):
